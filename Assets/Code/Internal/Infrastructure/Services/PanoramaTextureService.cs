@@ -13,6 +13,11 @@ public class PanoramaTextureService : MonoBehaviour
 
     [SerializeField] private List<TextureData> textureDatas = new();
 
+    public void AddTexture(string id, Texture texture)
+    {
+        textureDatas.Add(new TextureData {  Id = id, Texture = texture });
+    }
+
     public Texture GetPanoramaTexture(string id)
     {
         return textureDatas
