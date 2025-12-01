@@ -25,6 +25,11 @@ public class AddPanoramaController
     {
         var filename = fileDialogService.OpenFileDialog();
 
+        if (filename == null)
+        {
+            return;
+        }
+
         var id = idGeneratorService.GenerateId();
 
         var texture = textureLoadService.LoadTexture(filename);

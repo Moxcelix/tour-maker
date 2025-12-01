@@ -20,6 +20,9 @@ public class Modules : MonoBehaviour
     private IdGeneratorService idGeneratorService;
     private TextureLoadService textureLoadService;
 
+    // Presentation
+    [SerializeField] private AddPanoramaButton addPanoramaButton;
+
     private void Start()
     {
         panoramaPresenter = new PanoramaPresenter(panoramaTextureService, textureViewService);
@@ -31,7 +34,11 @@ public class Modules : MonoBehaviour
         currentTourService = new CurrentTourService();
         tourRepository = new TourRepository();
 
-        addPanoramaUsecase = new AddPanoramaUsecase(currentTourService, tourRepository, panoramaPresenter, panoramaFactory);
+        addPanoramaUsecase = new AddPanoramaUsecase(
+            currentTourService, 
+            tourRepository, 
+            panoramaPresenter, 
+            panoramaFactory);
 
         addPanoramaController = new AddPanoramaController(
             addPanoramaUsecase, 
@@ -40,7 +47,6 @@ public class Modules : MonoBehaviour
             idGeneratorService, 
             textureLoadService);
 
-        // test
-        addPanoramaController.AddPanorama();
+        addPanoramaButton.Initialize(addPanoramaController);
     }
 }

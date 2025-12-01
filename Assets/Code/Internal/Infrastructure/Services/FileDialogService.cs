@@ -11,7 +11,12 @@ public class FileDialogService
 
         var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
 
-        return paths[0];
+        if (paths.Length > 0)
+        {
+            return paths[0];
+        }
+
+        return null;
     }
 
 }
