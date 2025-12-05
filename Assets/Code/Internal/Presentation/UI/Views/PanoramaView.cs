@@ -4,12 +4,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
-public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     [SerializeField] private Image previewImage;
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI nameText;
-
-    private Canvas canvas; 
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color selectedColor = Color.yellow;
 
     private string panoramaId;
     private RectTransform rectTransform;
@@ -18,6 +19,10 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private Vector2 originalLocalPointerPosition;
     private Vector3 originalPanelLocalPosition;
     private bool isDragging = false;
+    private bool isSelected = false;
+
+    public delegate void OnPanoramaClicked(string panoramaId);
+    public event OnPanoramaClicked OnPanoramaClickedEvent;
 
     public delegate void OnViewChanged(string panoramaId);
     public event OnViewChanged OnViewChangedEvent;
@@ -27,8 +32,6 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-
-        canvas = GetComponentInParent<Canvas>();
     }
 
     public void Initialize(RectTransform boundary)
@@ -46,6 +49,48 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         previewImage.sprite = sprite;
         nameText.text = panoramaName;
+        backgroundImage.color = normalColor;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (isDragging) return;
+
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            SelectPanorama();
+
+            OnPanoramaClickedEvent?.Invoke(panoramaId);
+        }
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            ShowContextMenu();
+        }
+    }
+
+    public void SelectPanorama()
+    {
+        if (isSelected) return;
+
+        isSelected = true;
+        backgroundImage.color = selectedColor;
+
+        Debug.Log($"Panorama {panoramaId} selected");
+    }
+
+    public void DeselectPanorama()
+    {
+        if (!isSelected) return;
+
+        isSelected = false;
+        backgroundImage.color = normalColor;
+    }
+
+    private void ShowContextMenu()
+    {
+        Debug.Log($"Right click on panorama {panoramaId}");
+
+        OnViewChangedEvent?.Invoke(panoramaId);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -59,6 +104,8 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             eventData.pressEventCamera,
             out originalLocalPointerPosition
         );
+
+        OnPanoramaClickedEvent?.Invoke(panoramaId);
     }
 
     public void OnDrag(PointerEventData eventData)

@@ -336,4 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   previewImage: {fileID: 7634413963335439041}
+  backgroundImage: {fileID: 2657255849035851852}
   nameText: {fileID: 8517014746491785045}
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
