@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class AddPanoramaController
 {
     private readonly AddPanoramaUsecase addPanoramaUsecase;
@@ -6,6 +8,9 @@ public class AddPanoramaController
     private readonly PanoramaTextureService panoramaTextureService;
     private readonly IdGeneratorService idGeneratorService;
     private readonly TextureLoadService textureLoadService;
+
+    public delegate void AddPanoramaDelegate(Panorama panorama, Texture texture);
+    public event AddPanoramaDelegate AddPanoramaEvent;
 
     public AddPanoramaController(
         AddPanoramaUsecase addPanoramaUsecase,
@@ -36,6 +41,8 @@ public class AddPanoramaController
 
         panoramaTextureService.AddTexture(id, texture);
 
-        addPanoramaUsecase.Execute(id);
+        var panorama = addPanoramaUsecase.Execute(id, filename);
+
+        AddPanoramaEvent?.Invoke(panorama, texture);
     }
 }

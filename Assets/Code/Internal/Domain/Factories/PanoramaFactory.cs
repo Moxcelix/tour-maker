@@ -1,7 +1,7 @@
 public class PanoramaFactory
 {
-    public Panorama CreateEmptyPanorama(string panoramaId)
+    public Panorama CreateEmptyPanorama(string panoramaId, string panoramaName)
     {
-        return new Panorama(panoramaId);
+        return new Panorama(panoramaId, panoramaName);
     }
 }

@@ -5,9 +5,10 @@ public class Panorama
     public float PositionX { get; private set; }
     public float PositionY {  get; private set; }
 
-    public Panorama(string id)
+    public Panorama(string id, string name)
     {
         Id = id;
+        Name = name;
     }
 
     public void Rename(string name)

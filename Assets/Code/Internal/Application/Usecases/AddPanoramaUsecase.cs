@@ -15,16 +15,18 @@ public class AddPanoramaUsecase
         this.panoramaPresenter = panoramaPresenter;
         this.panoramaFactory = panoramaFactory;
     }
-    public void Execute(string panoramaId)
+    public Panorama Execute(string panoramaId, string panoramaName)
     {
         var currentTour = currentTourService.GetCurrentTour();
 
-        var panorama = panoramaFactory.CreateEmptyPanorama(panoramaId);
+        var panorama = panoramaFactory.CreateEmptyPanorama(panoramaId, panoramaName);
 
         currentTour.AddPanorama(panorama);
 
         tourRepository.Update(currentTour);
 
         panoramaPresenter.Present(panorama);
+
+        return panorama;
     }
 } 

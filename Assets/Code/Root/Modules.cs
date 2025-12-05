@@ -25,6 +25,7 @@ public class Modules : MonoBehaviour
     // Presentation
     [SerializeField] private AddPanoramaButton addPanoramaButton;
     [SerializeField] private NewTourButton newTourButton;
+    [SerializeField] private TourMapView tourMapView;
 
     private void Start()
     {
@@ -58,5 +59,6 @@ public class Modules : MonoBehaviour
 
         addPanoramaButton.Initialize(addPanoramaController);
         newTourButton.Initialize(newTourController);
+        tourMapView.Initialize(addPanoramaController);
     }
 }
