@@ -12,11 +12,14 @@ public class Modules : MonoBehaviour
     private AddPanoramaUsecase addPanoramaUsecase;
     private NewTourUsecase newTourUsecase;
     private GetPanoramaUsecase getPanoramaUsecase;
+    private RenamePanoramaUsecase renamePanoramaUsecase;
     
     // Infrastructure
     private AddPanoramaController addPanoramaController;
     private NewTourController newTourController;
     private GetPanoramaController getPanoramaController;
+    private RenamePanoramaController renamePanoramaController;
+
     [SerializeField] private PanoramaTextureService panoramaTextureService;
     [SerializeField] private TextureViewService textureViewService;
 
@@ -51,6 +54,9 @@ public class Modules : MonoBehaviour
             tourRepository);
         getPanoramaUsecase = new GetPanoramaUsecase(
             currentTourService);
+        renamePanoramaUsecase = new RenamePanoramaUsecase(
+            currentTourService, 
+            tourRepository);
 
         addPanoramaController = new AddPanoramaController(
             addPanoramaUsecase, 
@@ -58,12 +64,21 @@ public class Modules : MonoBehaviour
             panoramaTextureService, 
             idGeneratorService, 
             textureLoadService);
-        newTourController = new NewTourController(newTourUsecase);
-        getPanoramaController = new GetPanoramaController(getPanoramaUsecase);
+        newTourController = new NewTourController(
+            newTourUsecase);
+        getPanoramaController = new GetPanoramaController(
+            getPanoramaUsecase);
+        renamePanoramaController = new RenamePanoramaController(
+            renamePanoramaUsecase);
 
         addPanoramaButton.Initialize(addPanoramaController);
         newTourButton.Initialize(newTourController);
-        tourMapView.Initialize(addPanoramaController, getPanoramaController, panoramaDataMenu);
+        tourMapView.Initialize(
+            addPanoramaController, 
+            getPanoramaController, 
+            renamePanoramaController, 
+            panoramaDataMenu);
+        panoramaDataMenu.Initialize(renamePanoramaController);
 
         newTourController.NewTour();
         panoramaDataMenu.Hide();

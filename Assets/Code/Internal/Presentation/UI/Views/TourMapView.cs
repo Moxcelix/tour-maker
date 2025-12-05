@@ -6,21 +6,27 @@ public class TourMapView : MonoBehaviour
     [SerializeField] private PanoramaView panoramaViewPrefab;
     [SerializeField] private RectTransform mapArea;
 
-    private PanoramaDataMenu panoramaDataMenu;
     private AddPanoramaController addPanoramaController;
     private GetPanoramaController getPanoramaController;
+    private RenamePanoramaController renamePanoramaController;
+
+    private PanoramaDataMenu panoramaDataMenu;
     private List<PanoramaView> panoramaViews = new();
     private PanoramaView selectedPanorama;
 
     public void Initialize(
         AddPanoramaController addPanoramaController,
         GetPanoramaController getPanoramaController,
+        RenamePanoramaController renamePanoramaController,
         PanoramaDataMenu panoramaDataMenu)
     {
         this.addPanoramaController = addPanoramaController;
         this.addPanoramaController.AddPanoramaEvent += OnNewPanorama;
 
         this.getPanoramaController = getPanoramaController;
+
+        this.renamePanoramaController = renamePanoramaController;
+        this.renamePanoramaController.OnRenamePanoramaEvent += OnRenamePanorama;
 
         this.panoramaDataMenu = panoramaDataMenu;
     }
@@ -49,7 +55,20 @@ public class TourMapView : MonoBehaviour
         }
     }
 
-    public void OnNewPanorama(Panorama panorama, Texture texture)
+    private void OnRenamePanorama(string panoramaId, string panoramaName)
+    {
+        foreach (var panoramaView in panoramaViews)
+        {
+            if (panoramaView.GetPanoramaId() == panoramaId)
+            {
+                panoramaView.SetName(panoramaName);
+
+                break;
+            }
+        }
+    }
+
+    private void OnNewPanorama(Panorama panorama, Texture texture)
     {
         var panoramaView = Instantiate(panoramaViewPrefab, mapArea.transform);
 
@@ -94,10 +113,8 @@ public class TourMapView : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (this.addPanoramaController != null)
-        {
-            this.addPanoramaController.AddPanoramaEvent -= OnNewPanorama;
-        }
+        this.addPanoramaController.AddPanoramaEvent -= OnNewPanorama;
+        this.renamePanoramaController.OnRenamePanoramaEvent -= OnRenamePanorama;
 
         foreach (var view in panoramaViews)
         {

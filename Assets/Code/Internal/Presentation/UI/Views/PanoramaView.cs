@@ -178,6 +178,11 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         return rectTransform.localPosition;
     }
 
+    public void SetName(string name)
+    {
+        nameText.text = name;
+    }
+
     private void OnDestroy()
     {
         OnViewChangedEvent = null;
