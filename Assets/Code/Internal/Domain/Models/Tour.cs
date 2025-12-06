@@ -33,6 +33,20 @@ public class Tour
             throw new System.Exception("Both panoramas must exist in the tour");
         }
 
+        if (panorama1Id == panorama2Id)
+        {
+            throw new System.Exception("Can not link panorama with it self");
+        }
+
+        foreach (var b in Bridges)
+        {
+            if((b.Panorama1Id == panorama1Id && b.Panorama2Id == panorama2Id) || 
+                (b.Panorama1Id == panorama2Id && b.Panorama2Id == panorama1Id))
+            {
+                throw new System.Exception("Panoramas already connected");
+            }
+        }
+
         var bridge = new Bridge(panorama1Id, panorama2Id);
 
         Bridges.Add(bridge);

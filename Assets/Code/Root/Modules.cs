@@ -101,6 +101,7 @@ public class Modules : MonoBehaviour
             renamePanoramaController, 
             selectPanoramaController,
             movePanoramaController,
+            linkPanoramasController,
             mouseContextMenu,
             panoramaDataMenu);
         panoramaDataMenu.Initialize(renamePanoramaController);

@@ -37,19 +37,11 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Initialize(RectTransform boundary, MouseContextMenu mouseContextMenu)
+    public void Initialize(RectTransform boundary, MouseContextMenu mouseContextMenu, MouseContextMenuList mouseContextMenuList)
     {
         parentRectTransform = boundary;
-
         this.mouseContextMenu = mouseContextMenu;
-
-        mouseContextMenuList = new MouseContextMenuList("Panorama", new MouseContextMenuList.Item[]
-        {
-            new("Delete", ()=>{ }),
-            new("Make transition", ()=>{ }),
-            new("Set as default", ()=>{ }),
-            new("Rotate", ()=>{ }),
-        });
+        this.mouseContextMenuList = mouseContextMenuList;
     }
 
     public void View(string panoramaId, string panoramaName, Texture panoramaTexture)
@@ -192,7 +184,7 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     public Vector2 GetPosition()
     {
-        return rectTransform.localPosition;
+        return rectTransform.position;
     }
 
     public void SetName(string name)
