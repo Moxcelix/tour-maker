@@ -23,7 +23,7 @@ public class Tour
         return Panoramas.Find(pano => pano.Id == panoramaId);
     }
 
-    public void Link(string panorama1Id, string panorama2Id)
+    public Bridge Link(string panorama1Id, string panorama2Id)
     {
         var pano1 = GetPanorama(panorama1Id);
         var pano2 = GetPanorama(panorama2Id);
@@ -33,6 +33,10 @@ public class Tour
             throw new System.Exception("Both panoramas must exist in the tour");
         }
 
+        var bridge = new Bridge(panorama1Id, panorama2Id);
 
+        Bridges.Add(bridge);
+
+        return bridge;
     }
 }
