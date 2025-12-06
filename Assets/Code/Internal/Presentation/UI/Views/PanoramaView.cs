@@ -27,8 +27,8 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     public delegate void OnPanoramaClicked(string panoramaId);
     public event OnPanoramaClicked OnPanoramaClickedEvent;
 
-    public delegate void OnViewChanged(string panoramaId);
-    public event OnViewChanged OnViewChangedEvent;
+    public delegate void OnPanoramaMoved(string panoramaId, float x, float y);
+    public event OnPanoramaMoved OnPanoramaMovedEvent;
 
     public string GetPanoramaId() => panoramaId;
 
@@ -145,7 +145,9 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         isDragging = false;
 
-        OnViewChangedEvent?.Invoke(panoramaId);
+        Vector2 currentPosition = rectTransform.localPosition;
+
+        OnPanoramaMovedEvent?.Invoke(panoramaId, currentPosition.x, currentPosition.y);
     }
 
     private Vector3 ClampToBounds(Vector3 position)
@@ -200,6 +202,6 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private void OnDestroy()
     {
-        OnViewChangedEvent = null;
+        OnPanoramaMovedEvent = null;
     }
 }
