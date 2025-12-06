@@ -21,6 +21,9 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private bool isDragging = false;
     private bool isSelected = false;
 
+    private MouseContextMenu mouseContextMenu;
+    private MouseContextMenuList mouseContextMenuList;
+
     public delegate void OnPanoramaClicked(string panoramaId);
     public event OnPanoramaClicked OnPanoramaClickedEvent;
 
@@ -34,9 +37,19 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Initialize(RectTransform boundary)
+    public void Initialize(RectTransform boundary, MouseContextMenu mouseContextMenu)
     {
         parentRectTransform = boundary;
+
+        this.mouseContextMenu = mouseContextMenu;
+
+        mouseContextMenuList = new MouseContextMenuList("Panorama", new MouseContextMenuList.Item[]
+        {
+            new("Delete", ()=>{ }),
+            new("Make transition", ()=>{ }),
+            new("Set as default", ()=>{ }),
+            new("Rotate", ()=>{ }),
+        });
     }
 
     public void View(string panoramaId, string panoramaName, Texture panoramaTexture)
@@ -65,6 +78,10 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
             ShowContextMenu();
+
+            SelectPanorama();
+
+            OnPanoramaClickedEvent?.Invoke(panoramaId);
         }
     }
 
@@ -88,9 +105,7 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
     private void ShowContextMenu()
     {
-        Debug.Log($"Right click on panorama {panoramaId}");
-
-        OnViewChangedEvent?.Invoke(panoramaId);
+        mouseContextMenu.Show(mouseContextMenuList);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

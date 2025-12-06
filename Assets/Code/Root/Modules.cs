@@ -34,6 +34,7 @@ public class Modules : MonoBehaviour
     [SerializeField] private NewTourButton newTourButton;
     [SerializeField] private TourMapView tourMapView;
     [SerializeField] private PanoramaDataMenu panoramaDataMenu;
+    [SerializeField] private MouseContextMenu mouseContextMenu;
 
     private void Start()
     {
@@ -85,6 +86,7 @@ public class Modules : MonoBehaviour
             getPanoramaController, 
             renamePanoramaController, 
             selectPanoramaController,
+            mouseContextMenu,
             panoramaDataMenu);
         panoramaDataMenu.Initialize(renamePanoramaController);
 

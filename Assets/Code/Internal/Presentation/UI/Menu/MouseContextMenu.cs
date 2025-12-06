@@ -1,24 +1,72 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+public class MouseContextMenuList
+{
+    public class Item
+    {
+        public delegate void OnClickHandler();
+
+        private event OnClickHandler OnClickEvent;
+
+        public string Name { private set; get; }
+
+        public Item(string name, OnClickHandler onClickHandler)
+        {
+            Name = name;
+            OnClickEvent += onClickHandler;
+        }
+
+        public void Select()
+        {
+            OnClickEvent?.Invoke();
+        }
+
+        public void Clear()
+        {
+            OnClickEvent = null;
+        }
+    }
+
+    private readonly List<Item> _items;
+
+    public IEnumerable<Item> Items => _items;
+    public int ItemCount => _items.Count;
+    public string Name { private set; get; }
+
+    public MouseContextMenuList(string name, Item[] items)
+    {
+        _items = new List<Item>(items);
+        Name = name;
+    }
+
+    public void ClearAll()
+    {
+        foreach (var item in _items)
+        {
+            item.Clear();
+        }
+    }
+}
 
 public class MouseContextMenu : MonoBehaviour
 {
     private bool showMenu = false;
     private Vector2 menuPosition;
-    private Rect menuRect = new Rect(0, 0, 150, 100);
+    private Rect menuRect;
+    private MouseContextMenuList mouseContextMenuList;
 
-    void Update()
+    private const float WINDOW_WIDTH = 150f;
+    private const float BUTTON_HEIGHT = 25f;
+    private const float BUTTON_SPACING = 5f;
+    private const float PADDING = 10f;
+    private const float HEADER_HEIGHT = 20f;
+
+    private void Update()
     {
-        if (Input.GetMouseButtonDown(1)) 
-        {
-            showMenu = true;
-            menuPosition = Input.mousePosition;
-            menuRect.position = new Vector2(
-                menuPosition.x,
-                Screen.height - menuPosition.y 
-            );
-        }
+        if (!showMenu) return;
 
-        if (Input.GetMouseButtonDown(0) && showMenu)
+        if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = new Vector2(
                 Input.mousePosition.x,
@@ -30,35 +78,119 @@ public class MouseContextMenu : MonoBehaviour
                 showMenu = false;
             }
         }
-    }
 
-    void OnGUI()
-    {
-        if (showMenu)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            menuRect = GUI.Window(0, menuRect, DrawMenu, "Menu");
+            showMenu = false;
         }
     }
 
-    void DrawMenu(int windowID)
+    public void Show(MouseContextMenuList mouseContextMenuList)
     {
-        if (GUI.Button(new Rect(10, 20, 130, 20), "Action 1"))
+        this.mouseContextMenuList = mouseContextMenuList;
+
+        float windowHeight = CalculateWindowHeight(mouseContextMenuList.ItemCount);
+
+        menuPosition = Input.mousePosition;
+
+        menuRect = new Rect(
+            menuPosition.x,
+            Screen.height - menuPosition.y,
+            WINDOW_WIDTH,
+            windowHeight
+        );
+
+        menuRect = AdjustRectToScreenBounds(menuRect);
+
+        showMenu = true;
+    }
+
+    private float CalculateWindowHeight(int itemCount)
+    {
+        return HEADER_HEIGHT + PADDING * 2 + (BUTTON_HEIGHT + BUTTON_SPACING) * itemCount - BUTTON_SPACING;
+    }
+
+    private Rect AdjustRectToScreenBounds(Rect rect)
+    {
+        float screenWidth = Screen.width;
+        float screenHeight = Screen.height;
+
+        if (rect.x + rect.width > screenWidth)
         {
-            Debug.Log("Action 1 clicked");
-            showMenu = false;
+            rect.x = screenWidth - rect.width;
         }
 
-        if (GUI.Button(new Rect(10, 45, 130, 20), "Action 2"))
+        if (rect.y + rect.height > screenHeight)
         {
-            Debug.Log("Action 2 clicked");
-            showMenu = false;
+            rect.y = screenHeight - rect.height;
         }
 
-        if (GUI.Button(new Rect(10, 70, 130, 20), "Close"))
+        if (rect.x < 0)
         {
-            showMenu = false;
+            rect.x = 0;
         }
 
-        GUI.DragWindow();
+        if (rect.y < 0)
+        {
+            rect.y = 0;
+        }
+
+        return rect;
+    }
+
+    private void OnGUI()
+    {
+        if (!showMenu) return;
+
+        var originalBackgroundColor = GUI.backgroundColor;
+        var originalContentColor = GUI.contentColor;
+
+        GUI.backgroundColor = new Color(0.9f, 0.9f, 0.9f, 0.95f);
+
+        menuRect = GUI.Window(
+            0,
+            menuRect,
+            DrawMenuWindow,
+            mouseContextMenuList.Name
+        );
+    }
+
+    private void DrawMenuWindow(int windowID)
+    {
+        GUIStyle buttonStyle = new GUIStyle(GUI.skin.button)
+        {
+            alignment = TextAnchor.MiddleLeft,
+            padding = new RectOffset(10, 10, 0, 0)
+        };
+
+        float startY = HEADER_HEIGHT + PADDING;
+        float buttonWidth = WINDOW_WIDTH - PADDING * 2;
+
+        int counter = 0;
+
+        foreach (var item in mouseContextMenuList.Items)
+        {
+            if (item == null) continue;
+
+            float yPos = startY + (BUTTON_HEIGHT + BUTTON_SPACING) * counter;
+
+            if (GUI.Button(
+                new Rect(PADDING, yPos, buttonWidth, BUTTON_HEIGHT),
+                item.Name,
+                buttonStyle))
+            {
+                item.Select();
+                showMenu = false;
+                return;
+            }
+
+            counter++;
+        }
+    }
+
+    public void Hide()
+    {
+        showMenu = false;
+        mouseContextMenuList = null;
     }
 }

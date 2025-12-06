@@ -11,6 +11,7 @@ public class TourMapView : MonoBehaviour
     private RenamePanoramaController renamePanoramaController;
     private SelectPanoramaController selectPanoramaController;
 
+    private MouseContextMenu mouseContextMenu;
     private PanoramaDataMenu panoramaDataMenu;
     private List<PanoramaView> panoramaViews = new();
     private PanoramaView selectedPanorama;
@@ -20,6 +21,7 @@ public class TourMapView : MonoBehaviour
         GetPanoramaController getPanoramaController,
         RenamePanoramaController renamePanoramaController,
         SelectPanoramaController selectPanoramaController,
+        MouseContextMenu mouseContextMenu,
         PanoramaDataMenu panoramaDataMenu)
     {
         this.addPanoramaController = addPanoramaController;
@@ -33,6 +35,8 @@ public class TourMapView : MonoBehaviour
         this.selectPanoramaController = selectPanoramaController;
 
         this.panoramaDataMenu = panoramaDataMenu;
+
+        this.mouseContextMenu = mouseContextMenu;
     }
 
     private void OnPanoramaClicked(string panoramaId)
@@ -83,7 +87,7 @@ public class TourMapView : MonoBehaviour
     {
         var panoramaView = Instantiate(panoramaViewPrefab, mapArea.transform);
 
-        panoramaView.Initialize(mapArea);
+        panoramaView.Initialize(mapArea, mouseContextMenu);
 
         Vector2 startPosition = CalculateStartPosition(panorama);
 
