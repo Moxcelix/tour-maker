@@ -11,6 +11,7 @@ public class TourMapView : MonoBehaviour
     private GetPanoramaController getPanoramaController;
     private RenamePanoramaController renamePanoramaController;
     private SelectPanoramaController selectPanoramaController;
+    private MovePanoramaController movePanoramaController;
 
     private MouseContextMenu mouseContextMenu;
     private PanoramaDataMenu panoramaDataMenu;
@@ -22,6 +23,7 @@ public class TourMapView : MonoBehaviour
         GetPanoramaController getPanoramaController,
         RenamePanoramaController renamePanoramaController,
         SelectPanoramaController selectPanoramaController,
+        MovePanoramaController movePanoramaController,
         MouseContextMenu mouseContextMenu,
         PanoramaDataMenu panoramaDataMenu)
     {
@@ -34,6 +36,8 @@ public class TourMapView : MonoBehaviour
         this.renamePanoramaController.OnRenamePanoramaEvent += OnRenamePanorama;
 
         this.selectPanoramaController = selectPanoramaController;
+
+        this.movePanoramaController = movePanoramaController;
 
         this.panoramaDataMenu = panoramaDataMenu;
 
@@ -107,6 +111,8 @@ public class TourMapView : MonoBehaviour
     private void OnPanoramaMoved(string panoramaId, float x, float y)
     {
         Vector2 normalizedPosition = ConvertLocalToNormalizedPosition(new Vector2(x, y));
+
+        movePanoramaController.MovePanorama(panoramaId, x, y);
 
         Debug.Log($"Panorama {panoramaId} moved to normalized: {normalizedPosition}");
     }
