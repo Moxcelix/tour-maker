@@ -15,6 +15,7 @@ public class Modules : MonoBehaviour
     private RenamePanoramaUsecase renamePanoramaUsecase;
     private SelectPanoramaUsecase selectPanoramaUsecase;
     private MovePanoramaUsecase movePanoramaUsecase;
+    private LinkPanoramasUsecase linkPanoramaUsecase;
     
     // Infrastructure
     private AddPanoramaController addPanoramaController;
@@ -22,7 +23,8 @@ public class Modules : MonoBehaviour
     private GetPanoramaController getPanoramaController;
     private RenamePanoramaController renamePanoramaController;
     private SelectPanoramaController selectPanoramaController;
-    private  MovePanoramaController movePanoramaController;
+    private MovePanoramaController movePanoramaController;
+    private LinkPanoramasController linkPanoramasController;
 
     [SerializeField] private PanoramaTextureService panoramaTextureService;
     [SerializeField] private TextureViewService textureViewService;
@@ -68,6 +70,9 @@ public class Modules : MonoBehaviour
         movePanoramaUsecase = new MovePanoramaUsecase(
             currentTourService, 
             tourRepository);
+        linkPanoramaUsecase = new LinkPanoramasUsecase(
+            currentTourService, 
+            tourRepository);
 
         addPanoramaController = new AddPanoramaController(
             addPanoramaUsecase, 
@@ -85,6 +90,8 @@ public class Modules : MonoBehaviour
             selectPanoramaUsecase);
         movePanoramaController = new MovePanoramaController(
             movePanoramaUsecase);
+        linkPanoramasController = new LinkPanoramasController(
+            linkPanoramaUsecase);
 
         addPanoramaButton.Initialize(addPanoramaController);
         newTourButton.Initialize(newTourController);
