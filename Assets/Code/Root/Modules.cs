@@ -84,6 +84,7 @@ public class Modules : MonoBehaviour
             addPanoramaController, 
             getPanoramaController, 
             renamePanoramaController, 
+            selectPanoramaController,
             panoramaDataMenu);
         panoramaDataMenu.Initialize(renamePanoramaController);
 

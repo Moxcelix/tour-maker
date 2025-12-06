@@ -9,6 +9,7 @@ public class TourMapView : MonoBehaviour
     private AddPanoramaController addPanoramaController;
     private GetPanoramaController getPanoramaController;
     private RenamePanoramaController renamePanoramaController;
+    private SelectPanoramaController selectPanoramaController;
 
     private PanoramaDataMenu panoramaDataMenu;
     private List<PanoramaView> panoramaViews = new();
@@ -18,6 +19,7 @@ public class TourMapView : MonoBehaviour
         AddPanoramaController addPanoramaController,
         GetPanoramaController getPanoramaController,
         RenamePanoramaController renamePanoramaController,
+        SelectPanoramaController selectPanoramaController,
         PanoramaDataMenu panoramaDataMenu)
     {
         this.addPanoramaController = addPanoramaController;
@@ -28,6 +30,8 @@ public class TourMapView : MonoBehaviour
         this.renamePanoramaController = renamePanoramaController;
         this.renamePanoramaController.OnRenamePanoramaEvent += OnRenamePanorama;
 
+        this.selectPanoramaController = selectPanoramaController;
+
         this.panoramaDataMenu = panoramaDataMenu;
     }
 
@@ -35,6 +39,13 @@ public class TourMapView : MonoBehaviour
     {
         if (selectedPanorama != null)
         {
+            if(selectedPanorama.GetPanoramaId() == panoramaId)
+            {
+                selectPanoramaController.SelectPanorama(panoramaId);
+
+                return;
+            }
+
             selectedPanorama.DeselectPanorama();
         }
 
