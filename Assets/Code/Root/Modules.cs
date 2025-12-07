@@ -107,6 +107,7 @@ public class Modules : MonoBehaviour
             getTourUsecase, 
             movePanoramaUsecase, 
             linkPanoramaUsecase,
+            selectPanoramaUsecase,
             getTourButton, 
             tourMapView, 
             linkingView, 

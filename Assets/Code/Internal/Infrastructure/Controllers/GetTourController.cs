@@ -6,6 +6,7 @@ public class GetTourController
     private readonly GetTourUsecase getTourUsecase;
     private readonly MovePanoramaUsecase movePanoramaUsecase;
     private readonly LinkPanoramasUsecase linkPanoramasUsecase;
+    private readonly SelectPanoramaUsecase selectPanoramaUsecase;
 
     private readonly MouseContextMenu menu;
     private readonly UIButton getTourButton;
@@ -18,6 +19,7 @@ public class GetTourController
         GetTourUsecase getTourUsecase,
         MovePanoramaUsecase movePanoramaUsecase,
         LinkPanoramasUsecase linkPanoramasUsecase,
+        SelectPanoramaUsecase selectPanoramaUsecase,
         UIButton getTourButton,
         TourMapView tourMapView,
         LinkingView linkingView,
@@ -35,12 +37,19 @@ public class GetTourController
         this.menu = menu;
         this.navigationArrowsView = navigationArrowsView;
         this.linkPanoramasUsecase = linkPanoramasUsecase;
+        this.selectPanoramaUsecase = selectPanoramaUsecase;
 
         this.tourMapView.OnPanoramaLeftClicked += OnClick;
         this.tourMapView.OnPanoramaRightClicked += ShowContextMenu;
         this.tourMapView.OnPanoramaMoved += OnMove;
         this.linkingView.OnLinkingCompleted += OnLink;
+        this.navigationArrowsView.OnNavigationArrowClicked += OnNavigate;
         this.getTourButton.Clicked += GetTour;
+    }
+
+    private void OnNavigate(string panoramaId)
+    {
+        selectPanoramaUsecase.Execute(panoramaId);
     }
 
     public void GetTour()

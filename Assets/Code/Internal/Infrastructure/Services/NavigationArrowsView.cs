@@ -12,7 +12,7 @@ public class NavigationArrowsView : MonoBehaviour
 
     private Dictionary<string, NavigationArrow> navigationArrows = new ();
 
-    public event Action<string> NavigationArrowClicked;
+    public event Action<string> OnNavigationArrowClicked;
 
     public void NewBridge(Bridge bridge)
     {
@@ -92,7 +92,7 @@ public class NavigationArrowsView : MonoBehaviour
 
         navArrow.Initialize(link.Id, angle);
 
-        navArrow.OnClick += NavigationArrowClicked;
+        navArrow.OnClick += OnNavigationArrowClicked;
 
         navigationArrows.Add(link.Id, navArrow);
     }
@@ -101,7 +101,7 @@ public class NavigationArrowsView : MonoBehaviour
     {
         var navArrow = navigationArrows[link.Id];
 
-        navArrow.OnClick -= NavigationArrowClicked;
+        navArrow.OnClick -= OnNavigationArrowClicked;
 
         Destroy(navArrow.gameObject);
 
