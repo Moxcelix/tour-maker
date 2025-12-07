@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -21,39 +22,42 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     private bool isDragging = false;
     private bool isSelected = false;
 
-    private MouseContextMenu mouseContextMenu;
-    private MouseContextMenuList mouseContextMenuList;
-
-    public delegate void OnPanoramaClicked(string panoramaId);
-    public event OnPanoramaClicked OnPanoramaClickedEvent;
-
-    public delegate void OnPanoramaMoved(string panoramaId, float x, float y);
-    public event OnPanoramaMoved OnPanoramaMovedEvent;
+    public event Action<string> OnLeftClicked;
+    public event Action<string> OnRightClicked;
+    public event Action<string, float, float> OnMoved;
 
     public string GetPanoramaId() => panoramaId;
 
-    void Awake()
+    private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Initialize(RectTransform boundary, MouseContextMenu mouseContextMenu, MouseContextMenuList mouseContextMenuList)
+    private void OnDestroy()
     {
-        parentRectTransform = boundary;
-        this.mouseContextMenu = mouseContextMenu;
-        this.mouseContextMenuList = mouseContextMenuList;
+        OnMoved = null;
+        OnLeftClicked = null;
+        OnRightClicked = null;
     }
 
-    public void View(string panoramaId, string panoramaName, Texture panoramaTexture)
+    public void Initialize(RectTransform boundary)
     {
-        this.panoramaId = panoramaId;
+        parentRectTransform = boundary;
+    }
+
+    public void View(Panorama panorama, Texture panoramaTexture)
+    {
+        panoramaId = panorama.Id;
 
         var sprite = Sprite.Create((Texture2D)panoramaTexture,
             new Rect(0, 0, panoramaTexture.width, panoramaTexture.height),
             Vector2.zero);
 
         previewImage.sprite = sprite;
-        nameText.text = panoramaName;
+        nameText.text = panorama.Name;
+
+        SetPosition(panorama.PositionX, panorama.PositionY);
+
         backgroundImage.color = normalColor;
     }
 
@@ -63,17 +67,11 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            SelectPanorama();
-
-            OnPanoramaClickedEvent?.Invoke(panoramaId);
+            OnLeftClicked?.Invoke(panoramaId);
         }
         else if (eventData.button == PointerEventData.InputButton.Right)
         {
-            ShowContextMenu();
-
-            SelectPanorama();
-
-            OnPanoramaClickedEvent?.Invoke(panoramaId);
+            OnRightClicked?.Invoke(panoramaId);
         }
     }
 
@@ -82,9 +80,8 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (isSelected) return;
 
         isSelected = true;
-        backgroundImage.color = selectedColor;
 
-        Debug.Log($"Panorama {panoramaId} selected");
+        backgroundImage.color = selectedColor;
     }
 
     public void DeselectPanorama()
@@ -92,12 +89,8 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
         if (!isSelected) return;
 
         isSelected = false;
-        backgroundImage.color = normalColor;
-    }
 
-    private void ShowContextMenu()
-    {
-        mouseContextMenu.Show(mouseContextMenuList);
+        backgroundImage.color = normalColor;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -111,8 +104,6 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
             eventData.pressEventCamera,
             out originalLocalPointerPosition
         );
-
-        OnPanoramaClickedEvent?.Invoke(panoramaId);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -139,7 +130,25 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         Vector2 currentPosition = rectTransform.localPosition;
 
-        OnPanoramaMovedEvent?.Invoke(panoramaId, currentPosition.x, currentPosition.y);
+        (float x, float y) = ConvertLocalToNormalizedPosition(currentPosition);
+
+        OnMoved?.Invoke(panoramaId, x, y);
+    }
+    public void SetPosition(float x, float y)
+    {
+        var localPosition = ConvertNormalizedToLocalPosition(x, y);
+
+        rectTransform.localPosition = ClampToBounds(localPosition);
+    }
+
+    public Vector2 GetLocalPosition()
+    {
+        return rectTransform.position;
+    }
+
+    public void SetName(string name)
+    {
+        nameText.text = name;
     }
 
     private Vector3 ClampToBounds(Vector3 position)
@@ -170,30 +179,32 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
 
         return new Vector3(clampedX, clampedY, position.z);
     }
-    public void SetPosition(Vector2 localPosition)
+
+    private (float x, float y) ConvertLocalToNormalizedPosition(Vector2 localPosition)
     {
-        if (parentRectTransform != null)
-        {
-            rectTransform.localPosition = ClampToBounds(localPosition);
-        }
-        else
-        {
-            rectTransform.localPosition = localPosition;
-        }
+        Vector2 boundarySize = parentRectTransform.rect.size;
+        Vector2 elementSize = rectTransform.rect.size;
+
+        float maxOffsetX = Mathf.Max(0.001f, boundarySize.x / 2f - elementSize.x / 2f);
+        float maxOffsetY = Mathf.Max(0.001f, boundarySize.y / 2f - elementSize.y / 2f);
+
+        float normalizedX = Mathf.Clamp(localPosition.x / maxOffsetX, -1f, 1f);
+        float normalizedY = Mathf.Clamp(localPosition.y / maxOffsetY, -1f, 1f);
+
+        return (normalizedX, normalizedY);
     }
 
-    public Vector2 GetPosition()
+    private Vector2 ConvertNormalizedToLocalPosition(float normalizedX, float normalizedY)
     {
-        return rectTransform.position;
-    }
+        Vector2 boundarySize = parentRectTransform.rect.size;
+        Vector2 elementSize = rectTransform.rect.size;
 
-    public void SetName(string name)
-    {
-        nameText.text = name;
-    }
+        float maxOffsetX = Mathf.Max(0.001f, boundarySize.x / 2f - elementSize.x / 2f);
+        float maxOffsetY = Mathf.Max(0.001f, boundarySize.y / 2f - elementSize.y / 2f);
 
-    private void OnDestroy()
-    {
-        OnPanoramaMovedEvent = null;
+        float localX = Mathf.Clamp(normalizedX * maxOffsetX, -maxOffsetX, maxOffsetX);
+        float localY = Mathf.Clamp(normalizedY * maxOffsetY, -maxOffsetY, maxOffsetY);
+
+        return new Vector2(localX, localY);
     }
 }

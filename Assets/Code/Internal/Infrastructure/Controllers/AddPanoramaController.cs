@@ -10,7 +10,7 @@ public class AddPanoramaController
     private readonly TextureLoadService textureLoadService;
 
     public delegate void AddPanoramaDelegate(Panorama panorama, Texture texture);
-    public event AddPanoramaDelegate AddPanoramaEvent;
+    public event AddPanoramaDelegate AddPanoramaEvent;  
 
     public AddPanoramaController(
         AddPanoramaUsecase addPanoramaUsecase,

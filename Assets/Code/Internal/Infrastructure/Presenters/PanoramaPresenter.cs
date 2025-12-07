@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PanoramaPresenter : IPanoramaPresenter
 {
     private readonly PanoramaTextureService panoramaTextureService;

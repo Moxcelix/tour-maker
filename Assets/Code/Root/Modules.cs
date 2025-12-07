@@ -5,6 +5,7 @@ public class Modules : MonoBehaviour
     // Domain
     private PanoramaFactory panoramaFactory;
     private IPanoramaPresenter panoramaPresenter;
+    private IPanoramaLinksPresenter panoramaLinksPresenter;
     private ICurrentTourService currentTourService;
     private ITourRepository tourRepository;
 
@@ -16,6 +17,7 @@ public class Modules : MonoBehaviour
     private SelectPanoramaUsecase selectPanoramaUsecase;
     private MovePanoramaUsecase movePanoramaUsecase;
     private LinkPanoramasUsecase linkPanoramaUsecase;
+    private GetTourUsecase getTourUsecase;
     
     // Infrastructure
     private AddPanoramaController addPanoramaController;
@@ -25,9 +27,11 @@ public class Modules : MonoBehaviour
     private SelectPanoramaController selectPanoramaController;
     private MovePanoramaController movePanoramaController;
     private LinkPanoramasController linkPanoramasController;
+    private GetTourController getTourController;
 
     [SerializeField] private PanoramaTextureService panoramaTextureService;
     [SerializeField] private TextureViewService textureViewService;
+    [SerializeField] private NavigationArrowsView navigationArrowsView;
 
     private FileDialogService fileDialogService;
     private IdGeneratorService idGeneratorService;
@@ -40,9 +44,13 @@ public class Modules : MonoBehaviour
     [SerializeField] private PanoramaDataMenu panoramaDataMenu;
     [SerializeField] private MouseContextMenu mouseContextMenu;
 
+    [SerializeField] private LinkingView linkingView;
+    [SerializeField] private UIButton getTourButton;
+
     private void Start()
     {
         panoramaPresenter = new PanoramaPresenter(panoramaTextureService, textureViewService);
+        panoramaLinksPresenter = new PanoramaLinksPresenter(navigationArrowsView);
         fileDialogService = new FileDialogService();
         idGeneratorService = new IdGeneratorService();
         textureLoadService = new TextureLoadService();
@@ -55,6 +63,7 @@ public class Modules : MonoBehaviour
             currentTourService, 
             tourRepository, 
             panoramaPresenter, 
+            panoramaLinksPresenter,
             panoramaFactory);
         newTourUsecase = new NewTourUsecase(
             currentTourService, 
@@ -66,13 +75,15 @@ public class Modules : MonoBehaviour
             tourRepository);
         selectPanoramaUsecase = new SelectPanoramaUsecase(
             currentTourService, 
-            panoramaPresenter);
+            panoramaPresenter, 
+            panoramaLinksPresenter);
         movePanoramaUsecase = new MovePanoramaUsecase(
             currentTourService, 
             tourRepository);
         linkPanoramaUsecase = new LinkPanoramasUsecase(
             currentTourService, 
             tourRepository);
+        getTourUsecase = new GetTourUsecase(currentTourService);
 
         addPanoramaController = new AddPanoramaController(
             addPanoramaUsecase, 
@@ -92,18 +103,28 @@ public class Modules : MonoBehaviour
             movePanoramaUsecase);
         linkPanoramasController = new LinkPanoramasController(
             linkPanoramaUsecase);
+        getTourController = new GetTourController(
+            getTourUsecase, 
+            movePanoramaUsecase, 
+            linkPanoramaUsecase,
+            getTourButton, 
+            tourMapView, 
+            linkingView, 
+            panoramaTextureService, 
+            mouseContextMenu,
+            navigationArrowsView);
 
         addPanoramaButton.Initialize(addPanoramaController);
-        newTourButton.Initialize(newTourController);
-        tourMapView.Initialize(
-            addPanoramaController, 
-            getPanoramaController, 
-            renamePanoramaController, 
-            selectPanoramaController,
-            movePanoramaController,
-            linkPanoramasController,
-            mouseContextMenu,
-            panoramaDataMenu);
+        //newTourButton.Initialize(newTourController);
+        //tourMapView.Initialize(
+        //    addPanoramaController, 
+        //    getPanoramaController, 
+        //    renamePanoramaController, 
+        //    selectPanoramaController,
+        //    movePanoramaController,
+        //    linkPanoramasController,
+        //    mouseContextMenu,
+        //    panoramaDataMenu);
         panoramaDataMenu.Initialize(renamePanoramaController);
 
         newTourController.NewTour();

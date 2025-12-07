@@ -1,11 +1,11 @@
 public class Bridge
 {
-    public string Panorama1Id { get; }
-    public string Panorama2Id { get; }
+    public Panorama Panorama1 { get; }
+    public Panorama Panorama2 { get; }
 
-    public Bridge(string panorama1Id, string panorama2Id)
+    public Bridge(Panorama panorama1, Panorama panorama2)
     {
-        Panorama1Id = panorama1Id;
-        Panorama2Id = panorama2Id;
+        Panorama1 = panorama1;
+        Panorama2 = panorama2;
     }
 }
