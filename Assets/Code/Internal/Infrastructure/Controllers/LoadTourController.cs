@@ -1,40 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GetTourController
+public class LoadTourController
 {
-    private readonly GetTourUsecase getTourUsecase;
+    private readonly OpenTourUsecase openTourUsecase;
 
-    private readonly UIButton getTourButton;
+    private readonly UIButton button;
     private readonly TourMapView tourMapView;
     private readonly PanoramaTextureService panoramaTextureService;
     private readonly TexturePathService texturePathService;
     private readonly TextureLoadService textureLoadService;
 
-    public GetTourController(
-        GetTourUsecase getTourUsecase,
-        UIButton getTourButton,
+    public LoadTourController(
+        OpenTourUsecase openTourUsecase,
+        UIButton button,
         TourMapView tourMapView,
         PanoramaTextureService panoramaTextureService,
         TexturePathService texturePathService,
         TextureLoadService textureLoadService)
     {
-        this.getTourUsecase = getTourUsecase;
+        this.openTourUsecase = openTourUsecase;
 
-        this.getTourButton = getTourButton;
+        this.button = button;
         this.tourMapView = tourMapView;
         this.panoramaTextureService = panoramaTextureService;
         this.texturePathService = texturePathService;
         this.textureLoadService = textureLoadService;
 
-        this.getTourButton.Clicked += GetTour;
+        this.button.Clicked += OpenTour;
     }
 
-    private void GetTour()
+    private void OpenTour()
     {
         tourMapView.ClearAll();
 
-        var tour = getTourUsecase.Execute();
+        var tour = openTourUsecase.Execute("test");
 
         var textures = new Dictionary<string, Texture>();
 
