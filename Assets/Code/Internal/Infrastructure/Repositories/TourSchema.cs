@@ -4,6 +4,7 @@ using System;
 public struct TourSchema
 {
     public string name;
+    public string default_panorama;
     public PanoramaSchema[] panoramas;
     public BridgeSchema[] bridges;
 }

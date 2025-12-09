@@ -28,7 +28,7 @@ public class NavigationArrowsView : MonoBehaviour
 
     public void MovePanorama(Panorama panorama)
     {
-        if (panorama.Id == origin.Id)
+        if (origin == null || panorama.Id == origin.Id)
         {
             UpdateOrigin(panorama);
         }

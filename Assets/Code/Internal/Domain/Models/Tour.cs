@@ -7,6 +7,8 @@ public class Tour
     public List<Panorama> Panoramas { get; private set; }
     public List<Bridge> Bridges { get; private set; }
 
+    private string defaultPanoramaId = null;
+
     public Tour(string name, Panorama[] panoramas, Bridge[] bridges)
     {
         Name = name;
@@ -16,7 +18,22 @@ public class Tour
 
     public void AddPanorama(Panorama panorama)
     {
+        if (Panoramas.Count == 0)
+        {
+            SetDeafultPanorama(panorama.Id);
+        }
+
         Panoramas.Add(panorama);
+    }
+
+    public void SetDeafultPanorama(string panoramaId)
+    {
+        defaultPanoramaId = panoramaId; 
+    }
+
+    public Panorama GetDeafultPanorama()
+    {
+        return GetPanorama(defaultPanoramaId);
     }
 
     public Panorama GetPanorama(string panoramaId)

@@ -89,6 +89,7 @@ public class TourRepository : ITourRepository
         var tourSchema = new TourSchema
         {
             name = tour.Name,
+            default_panorama = tour.GetDeafultPanorama()?.Id,
             panoramas = panoramaSchemas,
             bridges = bridgeSchemas
         };
@@ -128,7 +129,11 @@ public class TourRepository : ITourRepository
             bridges[i] = new Bridge(panorama1, panorama2);
         }
 
-        return new Tour(tourSchema.name, panoramas, bridges);
+        var tour = new Tour(tourSchema.name, panoramas, bridges);
+
+        tour.SetDeafultPanorama(tourSchema.default_panorama);
+
+        return tour;
     }
 }
 
