@@ -71,6 +71,7 @@ public class TourRepository : ITourRepository
                 id = tour.Panoramas[i].Id,
                 x = tour.Panoramas[i].PositionX,
                 y = tour.Panoramas[i].PositionY,
+                rotation = tour.Panoramas[i].Rotation,
                 path = texturePathService.GetPath(tour.Panoramas[i].Id)
             };
         }
@@ -106,9 +107,12 @@ public class TourRepository : ITourRepository
         {
             var panoramaSchema = tourSchema.panoramas[i];
 
-            var panorama = new Panorama(panoramaSchema.id, panoramaSchema.name);
-
-            panorama.Move(panoramaSchema.x, panoramaSchema.y);
+            var panorama = new Panorama(
+                panoramaSchema.id, 
+                panoramaSchema.name,
+                panoramaSchema.x,
+                panoramaSchema.y,
+                panoramaSchema.rotation);
 
             panoramas[i] = panorama;
             panoramaDictionary[panoramaSchema.id] = panorama;

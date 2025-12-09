@@ -16,6 +16,7 @@ public struct PanoramaSchema
     public string name;
     public float x;
     public float y;
+    public float rotation;
     public string path;
 }
 
