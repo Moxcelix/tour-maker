@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -7,16 +8,10 @@ public class PanoramaDataMenu : MonoBehaviour
 
     [SerializeField] private TMP_InputField inputField;
 
-    private RenamePanoramaController renamePanoramaController;
-
     private string currentPanoramaId = null;
 
-    public void Initialize(RenamePanoramaController renamePanoramaController)
-    {
-        this.renamePanoramaController = renamePanoramaController;
+    public Action<string, string> OnNameValueChanged;
 
-        inputField.onEndEdit.AddListener(OnNameValueChanged);
-    }
 
     public void Show(Panorama panorama)
     {
@@ -34,13 +29,18 @@ public class PanoramaDataMenu : MonoBehaviour
         currentPanoramaId = null;
     }
 
-    private void OnNameValueChanged(string name)
+    private void OnNameValueChangedHandler(string name)
     {
-        renamePanoramaController.RenamePanorama(currentPanoramaId, name);
+        OnNameValueChanged?.Invoke(currentPanoramaId, name);
+    }
+
+    private void Start()
+    {
+        inputField.onEndEdit.AddListener(OnNameValueChangedHandler);
     }
 
     private void OnDestroy()
     {
-        inputField.onEndEdit.RemoveListener(OnNameValueChanged);
+        inputField.onEndEdit.RemoveListener(OnNameValueChangedHandler);
     }
 }

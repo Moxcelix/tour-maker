@@ -65,6 +65,9 @@ public class PanoramaView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEnd
     {
         if (isDragging) return;
 
+        if (!eventData.pointerCurrentRaycast.gameObject.transform.IsChildOf(transform))
+            return;
+
         if (eventData.button == PointerEventData.InputButton.Left)
         {
             OnLeftClicked?.Invoke(panoramaId);

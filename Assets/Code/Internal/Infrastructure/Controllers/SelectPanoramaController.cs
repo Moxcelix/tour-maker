@@ -1,19 +1,33 @@
 public class SelectPanoramaController
 {
     private readonly SelectPanoramaUsecase selectPanoramaUsecase;
+    private readonly TourMapView tourMapView;
+    private readonly NavigationArrowsView navigationArrowsView;
+    private readonly PanoramaDataMenu panoramaDataMenu;
 
-    public delegate void OnSelectPanorama(string panoramaId);
-    public OnSelectPanorama OnSelectPanoramaEvent;
 
-    public SelectPanoramaController(SelectPanoramaUsecase selectPanoramaUsecase)
+    public SelectPanoramaController(
+        SelectPanoramaUsecase selectPanoramaUsecase, 
+        TourMapView tourMapView, 
+        NavigationArrowsView navigationArrowsView,
+        PanoramaDataMenu panoramaDataMenu)
     {
         this.selectPanoramaUsecase = selectPanoramaUsecase;
+        this.tourMapView = tourMapView;
+        this.navigationArrowsView = navigationArrowsView;    
+        this.panoramaDataMenu = panoramaDataMenu;
+
+        this.tourMapView.OnPanoramaLeftClicked += OnPanoramaSelected;
+        this.navigationArrowsView.OnNavigationArrowClicked += OnPanoramaSelected;
     }
 
-    public void SelectPanorama(string panoramaId)
+    private void OnPanoramaSelected(string panoramaId)
     {
-        selectPanoramaUsecase.Execute(panoramaId);
+        var panorama = selectPanoramaUsecase.Execute(panoramaId);
 
-        OnSelectPanoramaEvent?.Invoke(panoramaId);
+        tourMapView.SelectPanorama(panoramaId);
+
+        panoramaDataMenu.Show(panorama);
     }
 }
+

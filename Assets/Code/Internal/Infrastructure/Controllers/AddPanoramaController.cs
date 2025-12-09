@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class AddPanoramaController
 {
     private readonly AddPanoramaUsecase addPanoramaUsecase;
@@ -9,21 +7,22 @@ public class AddPanoramaController
     private readonly IdGeneratorService idGeneratorService;
     private readonly TextureLoadService textureLoadService;
 
-    public delegate void AddPanoramaDelegate(Panorama panorama, Texture texture);
-    public event AddPanoramaDelegate AddPanoramaEvent;  
+    private readonly TourMapView tourMapView;
 
     public AddPanoramaController(
         AddPanoramaUsecase addPanoramaUsecase,
         FileDialogService fileDialogService,
         PanoramaTextureService panoramaTextureService,
         IdGeneratorService idGeneratorService,
-        TextureLoadService textureLoadService)
+        TextureLoadService textureLoadService,
+        TourMapView tourMapView)
     {
         this.addPanoramaUsecase = addPanoramaUsecase;
         this.fileDialogService = fileDialogService;
         this.panoramaTextureService = panoramaTextureService;
         this.idGeneratorService = idGeneratorService;
         this.textureLoadService = textureLoadService;
+        this.tourMapView = tourMapView;
     }
 
     public void AddPanorama()
@@ -43,6 +42,6 @@ public class AddPanoramaController
 
         var panorama = addPanoramaUsecase.Execute(id, filename);
 
-        AddPanoramaEvent?.Invoke(panorama, texture);
+        tourMapView.AddPanorama(panorama, texture);
     }
 }

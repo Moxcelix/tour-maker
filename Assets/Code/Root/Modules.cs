@@ -28,6 +28,7 @@ public class Modules : MonoBehaviour
     private MovePanoramaController movePanoramaController;
     private LinkPanoramasController linkPanoramasController;
     private GetTourController getTourController;
+    private PanoramaContextController panoramaContextController;
 
     [SerializeField] private PanoramaTextureService panoramaTextureService;
     [SerializeField] private TextureViewService textureViewService;
@@ -90,43 +91,41 @@ public class Modules : MonoBehaviour
             fileDialogService, 
             panoramaTextureService, 
             idGeneratorService, 
-            textureLoadService);
+            textureLoadService,
+            tourMapView);
         newTourController = new NewTourController(
             newTourUsecase);
         getPanoramaController = new GetPanoramaController(
             getPanoramaUsecase);
         renamePanoramaController = new RenamePanoramaController(
-            renamePanoramaUsecase);
+            renamePanoramaUsecase,
+            panoramaDataMenu,
+            tourMapView);
         selectPanoramaController = new SelectPanoramaController(
-            selectPanoramaUsecase);
+            selectPanoramaUsecase,
+            tourMapView,
+            navigationArrowsView,
+            panoramaDataMenu);
         movePanoramaController = new MovePanoramaController(
-            movePanoramaUsecase);
+            movePanoramaUsecase,
+            navigationArrowsView,
+            tourMapView);
         linkPanoramasController = new LinkPanoramasController(
-            linkPanoramaUsecase);
+            linkPanoramaUsecase,
+            linkingView,
+            tourMapView,
+            navigationArrowsView);
         getTourController = new GetTourController(
             getTourUsecase, 
-            movePanoramaUsecase, 
-            linkPanoramaUsecase,
-            selectPanoramaUsecase,
             getTourButton, 
             tourMapView, 
+            panoramaTextureService);
+        panoramaContextController = new PanoramaContextController(
             linkingView, 
-            panoramaTextureService, 
-            mouseContextMenu,
-            navigationArrowsView);
+            mouseContextMenu, 
+            tourMapView);
 
         addPanoramaButton.Initialize(addPanoramaController);
-        //newTourButton.Initialize(newTourController);
-        //tourMapView.Initialize(
-        //    addPanoramaController, 
-        //    getPanoramaController, 
-        //    renamePanoramaController, 
-        //    selectPanoramaController,
-        //    movePanoramaController,
-        //    linkPanoramasController,
-        //    mouseContextMenu,
-        //    panoramaDataMenu);
-        panoramaDataMenu.Initialize(renamePanoramaController);
 
         newTourController.NewTour();
         panoramaDataMenu.Hide();

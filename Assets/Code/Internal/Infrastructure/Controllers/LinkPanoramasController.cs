@@ -2,18 +2,40 @@ public class LinkPanoramasController
 {
     private readonly LinkPanoramasUsecase linkPanoramasUsecase;
 
-    public delegate void OnLinkPanorama(Bridge bridge);
-    public event OnLinkPanorama OnLinkPanoramaEvent;
+    private readonly LinkingView linkingView;
+    private readonly TourMapView tourMapView;
+    private readonly NavigationArrowsView navigationArrowsView;
 
-    public LinkPanoramasController(LinkPanoramasUsecase linkPanoramasUsecase)
+    public LinkPanoramasController(
+        LinkPanoramasUsecase linkPanoramasUsecase,
+        LinkingView linkingView,
+        TourMapView tourMapView,
+        NavigationArrowsView navigationArrowsView)
     {
+        this.linkingView = linkingView;
+        this.tourMapView = tourMapView;
         this.linkPanoramasUsecase = linkPanoramasUsecase;
+        this.navigationArrowsView = navigationArrowsView;
+
+        this.tourMapView.OnPanoramaLeftClicked += OnPanoramaLeftClicked;
+        this.linkingView.OnLinkingCompleted += OnLink;
     }
 
-    public void LinkPanoramas(string panorama1Id, string panorama2Id)
+    private void OnPanoramaLeftClicked(string panoramaId)
     {
-        var bridge = linkPanoramasUsecase.Execute(panorama1Id, panorama2Id);
+        linkingView.CompleteLinking(panoramaId);
+    }
 
-        OnLinkPanoramaEvent?.Invoke(bridge);
+    private void OnLink(string panorama1Id, string panorama2Id)
+    {
+        try
+        {
+            var bridge = linkPanoramasUsecase.Execute(panorama1Id, panorama2Id);
+
+            navigationArrowsView.NewBridge(bridge);
+
+            tourMapView.AddBridge(bridge);
+        }
+        catch { }
     }
 }

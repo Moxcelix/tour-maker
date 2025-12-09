@@ -44,6 +44,8 @@ public class CameraMover : MonoBehaviour
 
     private bool CanStartRotation()
     {
+        if (EventSystem.current == null) return false;
+
         return !EventSystem.current.IsPointerOverGameObject();
     }
 

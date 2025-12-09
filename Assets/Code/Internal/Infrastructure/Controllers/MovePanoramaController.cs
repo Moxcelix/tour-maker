@@ -2,19 +2,25 @@ public class MovePanoramaController
 {
     private readonly MovePanoramaUsecase movePanoramaUsecase;
 
-    public delegate void OnMovePanorama(Panorama panorama);
-    public event OnMovePanorama OnMovePanoramaEvent;
+    private readonly NavigationArrowsView navigationArrowsView;
+    private readonly TourMapView tourMapView;
 
     public MovePanoramaController(
-        MovePanoramaUsecase movePanoramaUsecase)
+        MovePanoramaUsecase movePanoramaUsecase, 
+        NavigationArrowsView navigationArrowsView,
+        TourMapView tourMapView)
     {
         this.movePanoramaUsecase = movePanoramaUsecase;
+        this.navigationArrowsView = navigationArrowsView;
+        this.tourMapView = tourMapView;
+
+        this.tourMapView.OnPanoramaMoved += OnMove;
     }
 
-    public void MovePanorama(string panoramaId, float x, float y)
+    private void OnMove(string panoramaId, float x, float y)
     {
         var panorama = movePanoramaUsecase.Execute(panoramaId, x, y);
 
-        OnMovePanoramaEvent?.Invoke(panorama);
+        navigationArrowsView.MovePanorama(panorama);
     }
 }

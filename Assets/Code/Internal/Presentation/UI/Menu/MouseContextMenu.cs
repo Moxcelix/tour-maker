@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseContextMenuList
 {
@@ -55,6 +56,7 @@ public class MouseContextMenu : MonoBehaviour
     private Vector2 menuPosition;
     private Rect menuRect;
     private MouseContextMenuList mouseContextMenuList;
+    private EventSystem eventSystem;
 
     private const float WINDOW_WIDTH = 150f;
     private const float BUTTON_HEIGHT = 25f;
@@ -75,18 +77,21 @@ public class MouseContextMenu : MonoBehaviour
 
             if (!menuRect.Contains(mousePos))
             {
-                showMenu = false;
+                Hide();
             }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            showMenu = false;
+            Hide();
         }
     }
 
     public void Show(MouseContextMenuList mouseContextMenuList)
     {
+        eventSystem = EventSystem.current;
+        eventSystem.enabled = false;
+
         this.mouseContextMenuList = mouseContextMenuList;
 
         float windowHeight = CalculateWindowHeight(mouseContextMenuList.ItemCount);
@@ -180,7 +185,7 @@ public class MouseContextMenu : MonoBehaviour
                 buttonStyle))
             {
                 item.Select();
-                showMenu = false;
+                Hide();
                 return;
             }
 
@@ -191,6 +196,7 @@ public class MouseContextMenu : MonoBehaviour
     public void Hide()
     {
         showMenu = false;
+        eventSystem.enabled = true;
         mouseContextMenuList = null;
     }
 }

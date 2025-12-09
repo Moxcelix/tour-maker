@@ -1,19 +1,25 @@
 public class RenamePanoramaController
 {
     private readonly RenamePanoramaUsecase renamePanoramaUsecase;
+    private readonly PanoramaDataMenu panoramaDataMenu;
+    private readonly TourMapView tourMapView;
 
-    public delegate void OnRenamePanorama(string id, string panoramaName);
-    public event OnRenamePanorama OnRenamePanoramaEvent;
-
-    public RenamePanoramaController(RenamePanoramaUsecase renamePanoramaUsecase)
+    public RenamePanoramaController(
+        RenamePanoramaUsecase renamePanoramaUsecase, 
+        PanoramaDataMenu panoramaDataMenu, 
+        TourMapView tourMapView)
     {
         this.renamePanoramaUsecase = renamePanoramaUsecase;
+        this.panoramaDataMenu = panoramaDataMenu;
+        this.tourMapView = tourMapView;
+
+        this.panoramaDataMenu.OnNameValueChanged += RenamePanorama;
     }
 
     public void RenamePanorama(string id, string name)
     {
         var panorama = renamePanoramaUsecase.Execute(id, name);
 
-        OnRenamePanoramaEvent?.Invoke(panorama.Id, panorama.Name);
+        tourMapView.RenamePanorama(id, name);
     }
 }

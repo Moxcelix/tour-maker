@@ -1099,15 +1099,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 673307169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7db9f3c14130e8f488586dfe5b4396e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 98071589964e7fb4687ad6cb5ca5d8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panoramaViewPrefab: {fileID: 8032857994712394488, guid: 7053f063889574a46b08ca3b38daaa0a, type: 3}
   lineRendererPrefab: {fileID: 1931602572963194113, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
   mapArea: {fileID: 1395202576}
   lineArea: {fileID: 1267157817}
-  currentLineRenderer: {fileID: 1000327342}
-  defaultPanoramaSize: {x: 100, y: 100}
 --- !u!1 &779092075
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,6 +1607,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1704,12 +1703,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mouseSensitivity: 350
   lockCursorWhenRotating: 0
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!114 &1000327342 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1931602572963194113, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
   m_PrefabInstance: {fileID: 1759216497}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1876034475}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 424776dd43530f04ab86856e19e98c7c, type: 3}
@@ -2160,12 +2175,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panoramaTextureService: {fileID: 1916259689}
   textureViewService: {fileID: 80313194}
-  navigationArrowsService: {fileID: 1639971791}
+  navigationArrowsView: {fileID: 1639971791}
   addPanoramaButton: {fileID: 958083486}
-  newTourButton: {fileID: 2019491506}
+  newTourButton: {fileID: 0}
   tourMapView: {fileID: 673307171}
   panoramaDataMenu: {fileID: 594748035}
   mouseContextMenu: {fileID: 150584601}
+  linkingView: {fileID: 1876034477}
+  getTourButton: {fileID: 2019491510}
 --- !u!4 &1285406563
 Transform:
   m_ObjectHideFlags: 0
@@ -2642,7 +2659,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1639971789}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29ec9aa52e409149af6f70dcf13680d, type: 3}
+  m_Script: {fileID: 11500000, guid: fa274271a041161498e1ae21877e9fcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   navigationArrowPrefab: {fileID: 5620639650395080965, guid: de18dc7c49d8b454fa266971aae3b019, type: 3}
@@ -2875,13 +2892,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5402423844034375537, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
       propertyPath: m_Name
-      value: LineRenderer
+      value: PreviewLinkLine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5402423844034375537, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1876034477}
   m_SourcePrefab: {fileID: 100100000, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
+--- !u!1 &1876034475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5402423844034375537, guid: b2385f1b39b19c048bfc2187e511b9c1, type: 3}
+  m_PrefabInstance: {fileID: 1759216497}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1876034477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876034475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c005a48061aa7044999615d0aa4774ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  previewLineRenderer: {fileID: 1000327342}
+  tourMapView: {fileID: 673307171}
 --- !u!1 &1895869689
 GameObject:
   m_ObjectHideFlags: 0
@@ -3179,7 +3218,7 @@ GameObject:
   - component: {fileID: 2019491509}
   - component: {fileID: 2019491508}
   - component: {fileID: 2019491507}
-  - component: {fileID: 2019491506}
+  - component: {fileID: 2019491510}
   m_Layer: 5
   m_Name: NewTourButton
   m_TagString: Untagged
@@ -3207,18 +3246,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2019491506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019491504}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a9f02c4d38008549928d05691232dff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2019491507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3262,19 +3289,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2019491508}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2019491506}
-        m_TargetAssemblyTypeName: NewTourButton, Assembly-CSharp
-        m_MethodName: Handler
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &2019491508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3313,6 +3328,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2019491504}
   m_CullTransparentMesh: 1
+--- !u!114 &2019491510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2019491504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b032872298a6c943922909c3e360bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 0}
 --- !u!1 &2128867088
 GameObject:
   m_ObjectHideFlags: 0

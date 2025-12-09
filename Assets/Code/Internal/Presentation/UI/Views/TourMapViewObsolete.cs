@@ -37,25 +37,7 @@ public class TourMapViewObsolete : MonoBehaviour
         MouseContextMenu mouseContextMenu,
         PanoramaDataMenu panoramaDataMenu)
     {
-        this.addPanoramaController = addPanoramaController;
-        this.addPanoramaController.AddPanoramaEvent += OnNewPanorama;
 
-        this.getPanoramaController = getPanoramaController;
-
-        this.renamePanoramaController = renamePanoramaController;
-        this.renamePanoramaController.OnRenamePanoramaEvent += OnRenamePanorama;
-
-        this.selectPanoramaController = selectPanoramaController;
-        this.selectPanoramaController.OnSelectPanoramaEvent += OnPanoramaSelected;
-
-        this.movePanoramaController = movePanoramaController;
-
-        this.linkPanoramaController = linkPanoramaController;
-        this.linkPanoramaController.OnLinkPanoramaEvent += OnPanoramasLink;
-
-        this.panoramaDataMenu = panoramaDataMenu;
-
-        this.mouseContextMenu = mouseContextMenu;
     }
 
     private void OnPanoramasLink(Bridge bridge)
@@ -96,7 +78,7 @@ public class TourMapViewObsolete : MonoBehaviour
         }
 
 
-        selectPanoramaController.SelectPanorama(panoramaId);
+        //selectPanoramaController.SelectPanorama(panoramaId);
     }
 
     private void OnRenamePanorama(string panoramaId, string panoramaName)
@@ -132,7 +114,7 @@ public class TourMapViewObsolete : MonoBehaviour
 
         try
         {
-            linkPanoramaController.LinkPanoramas(currentLinkPanoramaId, panoramaId);
+            //linkPanoramaController.LinkPanoramas(currentLinkPanoramaId, panoramaId);
 
             isLinking = false;
             currentLinkPanoramaId = null;
@@ -210,7 +192,7 @@ public class TourMapViewObsolete : MonoBehaviour
     {
         Vector2 normalizedPosition = ConvertLocalToNormalizedPosition(new Vector2(x, y));
 
-        movePanoramaController.MovePanorama(panoramaId, x, y);
+        //movePanoramaController.MovePanorama(panoramaId, x, y);
 
         Debug.Log($"Panorama {panoramaId} moved to normalized: {normalizedPosition}");
     }
@@ -310,8 +292,8 @@ public class TourMapViewObsolete : MonoBehaviour
 
     private void OnDestroy()
     {
-        addPanoramaController.AddPanoramaEvent -= OnNewPanorama;
-        renamePanoramaController.OnRenamePanoramaEvent -= OnRenamePanorama;
+      //  addPanoramaController.AddPanoramaEvent -= OnNewPanorama;
+       /// renamePanoramaController.OnRenamePanoramaEvent -= OnRenamePanorama;
 
         foreach (var view in panoramaViews)
         {
