@@ -25,4 +25,9 @@ public class Panorama
         PositionX = x;
         PositionY = y;
     }
+
+    public void Rotate(float angle)
+    {
+        Rotation = angle;
+    }
 }
