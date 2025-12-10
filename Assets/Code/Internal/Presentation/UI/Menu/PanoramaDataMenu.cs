@@ -16,6 +16,7 @@ public class PanoramaDataMenu : MonoBehaviour
     public Action<string, string> OnNameValueChanged;
     public Action<string, float> OnAngleValueChanged;
 
+    private bool eventLock = false;
 
     public void Show(Panorama panorama)
     {
@@ -23,8 +24,10 @@ public class PanoramaDataMenu : MonoBehaviour
 
         inputField.text = panorama.Name;
 
+        eventLock = true;
         angleInputField.text = panorama.Rotation.ToString();
         angleSlider.value = (panorama.Rotation + 360.0f) / 720.0f;
+        eventLock = false;
 
         currentPanoramaId = panorama.Id;
     }
@@ -43,20 +46,38 @@ public class PanoramaDataMenu : MonoBehaviour
 
     private void OnAngleValueChangedInputFieldHandler(string value)
     {
+        if (eventLock)
+        {
+            return;
+        }
+
+        eventLock = true;
+
         float newValue = Mathf.Clamp(float.Parse(value), - 360.0f, 360.0f);
 
         angleSlider.value = (newValue + 360.0f) / 720.0f;
 
         OnAngleValueChanged?.Invoke(currentPanoramaId, newValue);
+
+        eventLock = false;
     }
 
     private void OnAngleValueChangedSliderHandler(float value)
     {
+        if (eventLock)
+        {
+            return;
+        }
+
+        eventLock = true;
+
         float newValue = (value - 0.5f) * 360.0f;
 
         angleInputField.text = newValue.ToString();
 
         OnAngleValueChanged?.Invoke(currentPanoramaId, newValue);
+
+        eventLock = false;
     }
 
     private void Start()

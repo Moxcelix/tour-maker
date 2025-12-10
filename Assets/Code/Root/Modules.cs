@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Modules : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class Modules : MonoBehaviour
     private LinkPanoramasUsecase linkPanoramaUsecase;
     private GetTourUsecase getTourUsecase;
     private OpenTourUsecase openTourUsecase;
+    private RotatePanoramaUsecase rotatePanoramaUsecase;
     
     // Infrastructure
     private AddPanoramaController addPanoramaController;
@@ -31,10 +33,12 @@ public class Modules : MonoBehaviour
     private GetTourController getTourController;
     private PanoramaContextController panoramaContextController;
     private LoadTourController loadTourController;
+    private RotatePanoramaController rotatePanoramaController;
 
     [SerializeField] private PanoramaTextureService panoramaTextureService;
     [SerializeField] private TextureViewService textureViewService;
     [SerializeField] private NavigationArrowsView navigationArrowsView;
+    [SerializeField] private RotationService rotationService;
 
     private FileDialogService fileDialogService;
     private IdGeneratorService idGeneratorService;
@@ -54,7 +58,7 @@ public class Modules : MonoBehaviour
 
     private void Start()
     {
-        panoramaPresenter = new PanoramaPresenter(panoramaTextureService, textureViewService);
+        panoramaPresenter = new PanoramaPresenter(panoramaTextureService, textureViewService, rotationService);
         panoramaLinksPresenter = new PanoramaLinksPresenter(navigationArrowsView);
         fileDialogService = new FileDialogService();
         idGeneratorService = new IdGeneratorService();
@@ -91,6 +95,7 @@ public class Modules : MonoBehaviour
             tourRepository);
         getTourUsecase = new GetTourUsecase(currentTourService);
         openTourUsecase = new OpenTourUsecase(currentTourService, tourRepository);
+        rotatePanoramaUsecase = new RotatePanoramaUsecase(currentTourService, tourRepository, panoramaPresenter);
 
         addPanoramaController = new AddPanoramaController(
             addPanoramaUsecase, 
@@ -142,6 +147,7 @@ public class Modules : MonoBehaviour
             panoramaTextureService, 
             texturePathService, 
             textureLoadService);
+        rotatePanoramaController = new RotatePanoramaController(rotatePanoramaUsecase, panoramaDataMenu);
 
         panoramaDataMenu.Hide();
     }
